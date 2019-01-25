@@ -1,6 +1,6 @@
 import { shallow } from 'enzyme';
 import React from 'react';
-import TextSample from '../TextSample';
+import TextSample from '../sample/TextSample';
 
 
 test('<h2 />の存在確認1', () => {
