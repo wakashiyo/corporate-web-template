@@ -1,19 +1,14 @@
 import React, { Component } from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-//import Typography from '@material-ui/core/Typography';
-import Hidden from '@material-ui/core/Hidden';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import './App.css';
+import PropTypes from 'prop-types';
+import Routes from './_env';
+import { BrowserRouter, Route } from 'react-router-dom';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { withStyles } from '@material-ui/core/styles';
+import TemporaryLeftBar from './components/TemporaryLeftBar';
+import LeftBar from './components/LeftBar';
+import TopBar from './components/TopBar';
+import LeftBarList from './components/LeftBarList';
 
 const drawerWidth = 240;
 
@@ -61,78 +56,57 @@ class App extends Component {
   render() {
     const { classes, theme } = this.props;
 
+    // 左メニューのリスト
     const drawer = (
-      <div>
-        <div className={classes.toolbar} >
-          sample.inc
-        </div>
-        <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </div>
+      <LeftBarList
+        toolbar={classes.toolbar}
+        titleName={'sample.inc'}
+        routes={Routes}
+      />
     );
 
     return (
-      <div className={classes.root}>
-        <CssBaseline />
-        {/* 画面上部のAppBar */}
-        <AppBar 
-          position="fixed"
-          className={classes.appBar}
-          color="#fafafa"
-          style={{boxShadow: "none"}}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerToggle}
-              className={classes.menuButton}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        {/* 画面左横のDrawer */}
-        <nav className={classes.drawer}>
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. 
-              モバイルのように画面が小さい場合の一時的に表示されるDrawer
-          */}
-          <Hidden smUp implementation="css">
-            <Drawer
-              container={this.props.container}
-              variant="temporary"
-              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open={this.state.mobileOpen}
-              onClose={this.handleDrawerToggle}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-          {/* 
-              普段のPCのブラウザでみている場合のDrawer
-           */}
-          <Hidden xsDown implementation="css">
-            <Drawer
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              variant="permanent"
-              open
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-        </nav>
-      </div>
+      <BrowserRouter>
+        <div className={classes.root}>
+          <CssBaseline />
+          {/* 画面上部のAppBar */}
+          <TopBar
+            appBar={classes.appBar}
+            menuButton={classes.menuButton}
+            handle={this.handleDrawerToggle}
+          />
+          {/* 画面左横のDrawer */}
+          <nav className={classes.drawer}>
+            {/* The implementation can be swapped with js to avoid SEO duplication of links. 
+                モバイルのように画面が小さい場合の一時的に表示されるDrawer
+            */}
+            <TemporaryLeftBar
+              direction={theme.direction}
+              mobileOpen={this.state.mobileOpen}
+              handle={this.handleDrawerToggle}
+              drawerPaper={classes.drawerPaper}
+              drawer={drawer}
+            />
+            {/* 
+                普段のPCのブラウザでみている場合のDrawer
+            */}
+            <LeftBar
+              drawerPaper={classes.drawerPaper}
+              drawer={drawer}
+            />
+          </nav>
+          {/* コンテンツ */}
+          <main className={classes.content} style={{backgroundColor: "white"}}>
+            <div className={classes.toolbar} />
+            <Route exact path="/" />
+            {Routes.map((prop, key) => {
+              return (
+                <Route path={prop.path} component={prop.component} />
+              );
+            })}
+          </main>
+        </div>
+      </BrowserRouter>
     );
   }
 }
