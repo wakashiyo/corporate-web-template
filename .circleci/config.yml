@@ -10,14 +10,14 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-          - v1-npm-dependency-cache-{{ .Branch }}-{{ checksum "package.json" }}
+          - v1-dependency-{{ checksum "package.json" }}
       - run:
-          name: node modules installation
+          name: install
           command: yarn install
       - save_cache:
           paths:
             - ~/workspace/node_modules
-          key: v1-npm-dependency-cathe-{{ .Branch }}-{{ checksum "package.json" }}
+          key: v1-dependency-{{ checksum "package.json" }}
       - run:
           name: test
           command: yarn test
