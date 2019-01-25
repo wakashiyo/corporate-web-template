@@ -1,6 +1,6 @@
-import { shallow, mount, render } from 'enzyme';
+import { shallow } from 'enzyme';
 import React from 'react';
-import ButtonSample from '../ButtonSample';
+import ButtonSample from '../sample/ButtonSample';
 
 
 test('<button />の存在確認1', () => {
