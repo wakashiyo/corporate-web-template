@@ -13,14 +13,14 @@ jobs:
           - v1-npm-dependency-cache-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: node modules installation
-          command: npm install
+          command: yarn install
       - save_cache:
           paths:
             - ~/workspace/node_modules
           key: v1-npm-dependency-cathe-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: test
-          command: npm test -- --coverage
+          command: yarn test
 
   build:
     docker:
@@ -33,10 +33,10 @@ jobs:
           - v1-npm-dependency-cache-{{ .Branch }}-{{ checksum "package.json" }}
       - run:
           name: install
-          command: npm install
+          command: yarn install
       - run:
           name: build
-          command: npm run build
+          command: yarn build
 
 workflows:
   version: 2
