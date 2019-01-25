@@ -4,8 +4,10 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
+//import List from '@material-ui/core/List';
+//import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Drawer from '@material-ui/core/Drawer';
@@ -14,6 +16,9 @@ import Hidden from '@material-ui/core/Hidden';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import './App.css';
+import Routes from './_env';
+import { Link, BrowserRouter, Route } from 'react-router-dom';
+import TemporaryLeftBar from './components/TemporaryLeftBar';
 
 const drawerWidth = 240;
 
@@ -67,72 +72,94 @@ class App extends Component {
           sample.inc
         </div>
         <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
+        <MenuList>
+          {Routes.map((prop, key) => {
+            return (
+              <Link to={prop.path} style={{ textDecoration: 'none' }} key={key}>
+                <MenuItem>
+                  <ListItemText primary={prop.title} />
+                </MenuItem>
+              </Link>
+            );
+          })}
+        </MenuList>
       </div>
     );
 
     return (
-      <div className={classes.root}>
-        <CssBaseline />
-        {/* 画面上部のAppBar */}
-        <AppBar 
-          position="fixed"
-          className={classes.appBar}
-          color="#fafafa"
-          style={{boxShadow: "none"}}
-        >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerToggle}
-              className={classes.menuButton}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        {/* 画面左横のDrawer */}
-        <nav className={classes.drawer}>
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. 
-              モバイルのように画面が小さい場合の一時的に表示されるDrawer
-          */}
-          <Hidden smUp implementation="css">
-            <Drawer
-              container={this.props.container}
-              variant="temporary"
-              anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-              open={this.state.mobileOpen}
-              onClose={this.handleDrawerToggle}
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-          {/* 
-              普段のPCのブラウザでみている場合のDrawer
-           */}
-          <Hidden xsDown implementation="css">
-            <Drawer
-              classes={{
-                paper: classes.drawerPaper,
-              }}
-              variant="permanent"
-              open
-            >
-              {drawer}
-            </Drawer>
-          </Hidden>
-        </nav>
-      </div>
+      <BrowserRouter>
+        <div className={classes.root}>
+          <CssBaseline />
+          {/* 画面上部のAppBar */}
+          <AppBar 
+            position="fixed"
+            className={classes.appBar}
+            color="#fafafa"
+            style={{boxShadow: "none"}}
+          >
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="Open drawer"
+                onClick={this.handleDrawerToggle}
+                className={classes.menuButton}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          {/* 画面左横のDrawer */}
+          <nav className={classes.drawer}>
+            {/* The implementation can be swapped with js to avoid SEO duplication of links. 
+                モバイルのように画面が小さい場合の一時的に表示されるDrawer
+            */}
+            <TemporaryLeftBar
+              direction={theme.direction}
+              mobileOpen={this.state.mobileOpen}
+              handle={this.handleDrawerToggle}
+              drawerPaper={classes.drawerPaper}
+              drawer={drawer}
+            />
+            {/* <Hidden smUp implementation="css">
+              <Drawer
+                container={this.props.container}
+                variant="temporary"
+                anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+                open={this.state.mobileOpen}
+                onClose={this.handleDrawerToggle}
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+              >
+                {drawer}
+              </Drawer>
+            </Hidden> */}
+            {/* 
+                普段のPCのブラウザでみている場合のDrawer
+            */}
+            <Hidden xsDown implementation="css">
+              <Drawer
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+                variant="permanent"
+                open
+              >
+                {drawer}
+              </Drawer>
+            </Hidden>
+          </nav>
+          <main className={classes.content} style={{backgroundColor: "white"}}>
+            <div className={classes.toolbar} />
+            <Route exact path="/" />
+            {Routes.map((prop, key) => {
+              return (
+                <Route path={prop.path} component={prop.component} />
+              );
+            })}
+          </main>
+        </div>
+      </BrowserRouter>
     );
   }
 }
