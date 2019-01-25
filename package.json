@@ -21,5 +21,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "enzyme": "~4.6.13.8.0",
+    "enzyme-adapter-react-16": "~4.6.11.8.0"
+  }
 }
